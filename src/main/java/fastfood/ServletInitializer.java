@@ -1,4 +1,4 @@
-package fastfood.fast_food;
+package fastfood;
 
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
