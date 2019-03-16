@@ -1,4 +1,4 @@
-package fastfood.fast_food;
+package fastfood;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
