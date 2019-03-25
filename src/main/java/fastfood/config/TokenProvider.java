@@ -1,8 +1,11 @@
 package fastfood.config;
 
-import exception.CustomException;
+import fastfood.domain.UserResponse;
+import fastfood.exception.CustomException;
 import fastfood.contant.Error;
+import fastfood.service.UserService;
 import io.jsonwebtoken.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -25,6 +28,10 @@ import java.util.stream.Collectors;
 
 @Component
 public class TokenProvider implements Serializable {
+
+    @Autowired
+    private UserService userService;
+
     private PrivateKey PRIVATE_KEY;
     private PublicKey PUBLIC_KEY;
     private String KEY_STORE_DIR;
@@ -47,6 +54,8 @@ public class TokenProvider implements Serializable {
     }
 
     UsernamePasswordAuthenticationToken getAuthentication(final  String token, final UserDetails userDetails) {
+
+        UserResponse userResponse = userService.get
         final JwtParser jwtParser = Jwts.parser().setSigningKey(PUBLIC_KEY);
 
         final Jws<Claims> claimsJws  = jwtParser.parseClaimsJws(token);

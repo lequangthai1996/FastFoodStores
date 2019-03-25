@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import fastfood.entity.RoleEntity;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.List;
 
@@ -16,6 +17,9 @@ public class UserResponse {
     private String password;
     private List<RoleEntity>  authorities;
 
+
+    public UserResponse() {
+    }
 
     public UserResponse(String username, String fullName, String password, List<RoleEntity> authorities) {
         this.username = username;
@@ -65,4 +69,9 @@ public class UserResponse {
     }
 
 
+    public UserResponse convertUserDetailsToUserResponse(UserDetails userDetails) {
+        UserResponse userResponse = new UserResponse();
+        userResponse.setUsername(userDetails.getUsername());
+        userResponse.setFullName(userDetails.get);
+    }
 }

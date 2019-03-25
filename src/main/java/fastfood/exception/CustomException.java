@@ -1,4 +1,4 @@
-package exception;
+package fastfood.exception;
 
 import org.springframework.http.HttpStatus;
 
