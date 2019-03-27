@@ -29,10 +29,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     @Bean
-    public AuthenticationManager authenticationManager() throws  Exception{
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws  Exception{
         return super.authenticationManagerBean();
     }
 
+    @Autowired
     public void globalUserDetails(AuthenticationManagerBuilder authenticationManagerBuilder) throws  Exception {
         authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
     }
@@ -51,7 +53,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable().
                 authorizeRequests()
-                .antMatchers("/auth/user/login","/auth/clinic/login","/signup", "/generate-key", "/auth/refresh-token").permitAll()
+                .antMatchers("/auth/*","/user/*").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and()

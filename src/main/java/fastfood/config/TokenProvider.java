@@ -4,8 +4,10 @@ import fastfood.domain.UserResponse;
 import fastfood.exception.CustomException;
 import fastfood.contant.Error;
 import fastfood.service.UserService;
+import fastfood.utils.AsymmetricCryptography;
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -34,20 +36,28 @@ public class TokenProvider implements Serializable {
 
     private PrivateKey PRIVATE_KEY;
     private PublicKey PUBLIC_KEY;
+    @Value("${key.store.dir}")
     private String KEY_STORE_DIR;
+    @Value("${jwt.token.expiration}")
     private String TOKEN_EXPIRATTION;
+    @Value("${jwt.header}")
     private String HEADER_STRING;
+    @Value("${jwt.authorityKey}")
     private String AUTHORITY_KEY;
+    @Value("${jwt.token.prefix}")
     private String TOKEN_PREFIX;
 
     public String generateToken(Authentication authentication) throws  Exception {
+        AsymmetricCryptography ac = new AsymmetricCryptography();
+        PRIVATE_KEY = ac.getPrivate(KEY_STORE_DIR + "/privateKey");
+        PUBLIC_KEY = ac.getPublic(KEY_STORE_DIR + "/publicKey");
         final String authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
         return Jwts.builder()
                 .setSubject(authentication.getName())
                 .claim(AUTHORITY_KEY, authorities)
-                .signWith(SignatureAlgorithm.HS256, PRIVATE_KEY)
+                .signWith(SignatureAlgorithm.RS256, PRIVATE_KEY)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + Integer.parseInt(TOKEN_EXPIRATTION)))
                 .compact();
@@ -55,7 +65,8 @@ public class TokenProvider implements Serializable {
 
     UsernamePasswordAuthenticationToken getAuthentication(final  String token, final UserDetails userDetails) {
 
-        UserResponse userResponse = userService.get
+        UserResponse userResponse = userService.getUserByUserName(getUsernameFromToken(token));
+
         final JwtParser jwtParser = Jwts.parser().setSigningKey(PUBLIC_KEY);
 
         final Jws<Claims> claimsJws  = jwtParser.parseClaimsJws(token);
@@ -65,7 +76,7 @@ public class TokenProvider implements Serializable {
 
         final Collection<? extends  GrantedAuthority> authorities  = Arrays.stream(
                 claims.get(AUTHORITY_KEY).toString().split(",")).map(SimpleGrantedAuthority::new).collect(Collectors.toList());
-        return new UsernamePasswordAuthenticationToken(userDetails, "", authorities);
+        return new UsernamePasswordAuthenticationToken(userResponse, "", authorities);
     }
 
     public String resolveToken(HttpServletRequest req) {

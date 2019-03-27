@@ -10,22 +10,33 @@ import java.util.List;
 
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class UserResponse {
+    private  String id;
     private String username;
     private String fullName;
     private String avatar;
     @JsonIgnore
     private String password;
-    private List<RoleEntity>  authorities;
+    private List<RoleDTO>  authorities;
 
 
     public UserResponse() {
     }
 
-    public UserResponse(String username, String fullName, String password, List<RoleEntity> authorities) {
+    public UserResponse(String id, String avatar, String username, String fullName, String password, List<RoleDTO> authorities) {
         this.username = username;
         this.fullName = fullName;
         this.password = password;
+        this.id = id;
+        this.avatar = avatar;
         this.authorities = authorities;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getAvatar() {
@@ -60,18 +71,13 @@ public class UserResponse {
         this.password = password;
     }
 
-    public List<RoleEntity> getAuthorities() {
+    public List<RoleDTO> getAuthorities() {
         return authorities;
     }
 
-    public void setAuthorities(List<RoleEntity> authorities) {
+    public void setAuthorities(List<RoleDTO> authorities) {
         this.authorities = authorities;
     }
 
 
-    public UserResponse convertUserDetailsToUserResponse(UserDetails userDetails) {
-        UserResponse userResponse = new UserResponse();
-        userResponse.setUsername(userDetails.getUsername());
-        userResponse.setFullName(userDetails.get);
-    }
 }

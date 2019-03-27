@@ -1,5 +1,8 @@
 package fastfood.entity;
 
+import fastfood.domain.RoleDTO;
+import fastfood.utils.StringUtils;
+
 import javax.persistence.*;
 
 @Entity
@@ -39,5 +42,10 @@ public class RoleEntity extends  BasicEntity {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public RoleDTO convertToRoleDTO() {
+        RoleDTO roleDTO = new RoleDTO(StringUtils.convertObjectToString(this.getId()), this.getName());
+        return roleDTO;
     }
 }

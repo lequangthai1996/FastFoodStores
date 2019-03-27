@@ -3,7 +3,7 @@ package fastfood.config;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fastfood.exception.CustomException;
-import fastfood.domain.ResponeCommonAPI;
+import fastfood.domain.ResponseCommonAPI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import javax.annotation.Resource;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -24,7 +25,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private TokenProvider tokenProvider;
 
-    @Autowired
+    @Resource(name = "userService")
     private UserDetailsService userDetailsService;
 
     @Override
@@ -38,13 +39,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
         } catch (CustomException ex ) {
             SecurityContextHolder.clearContext();
-            ResponeCommonAPI responeCommonAPI = new ResponeCommonAPI();
-            responeCommonAPI.setError(Collections.singletonList(new CustomException(null, ex.getMessage(), ex.getHttpStatus())));
-            responeCommonAPI.setSuccess(false);
+            ResponseCommonAPI responseCommonAPI = new ResponseCommonAPI();
+            responseCommonAPI.setError(Collections.singletonList(new CustomException(null, ex.getMessage(), ex.getHttpStatus())));
+            responseCommonAPI.setSuccess(false);
 
             response.setStatus(ex.getHttpStatus().value());
             response.setContentType("application/json");
-            response.getWriter().write(convertObjectToJson(responeCommonAPI));
+            response.getWriter().write(convertObjectToJson(responseCommonAPI));
             return;
         }
         filterChain.doFilter(request,response);
