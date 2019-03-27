@@ -63,7 +63,7 @@ public class TokenProvider implements Serializable {
                 .compact();
     }
 
-    UsernamePasswordAuthenticationToken getAuthentication(final  String token, final UserDetails userDetails) {
+    UsernamePasswordAuthenticationToken getAuthentication(final  String token) {
 
         UserResponse userResponse = userService.getUserByUserName(getUsernameFromToken(token));
 
@@ -76,7 +76,7 @@ public class TokenProvider implements Serializable {
 
         final Collection<? extends  GrantedAuthority> authorities  = Arrays.stream(
                 claims.get(AUTHORITY_KEY).toString().split(",")).map(SimpleGrantedAuthority::new).collect(Collectors.toList());
-        return new UsernamePasswordAuthenticationToken(userResponse, "", authorities);
+        return new CustomAuthenticationToken(userResponse, "", authorities);
     }
 
     public String resolveToken(HttpServletRequest req) {

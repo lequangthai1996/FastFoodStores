@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 @Service(value = "userService")
 public class UserServiceImpl implements UserService, UserDetailsService {
@@ -122,6 +123,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             savedUser = userRepository.save(userEntity);
             return savedUser != null ? savedUser.convertToUserResponse() : null;
         }
+
+
+
+    }
+
+    @Override
+    public List<UserEntity> getAllUser() {
+        return userRepository.findAll();
     }
 
 
