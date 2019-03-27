@@ -1,8 +1,11 @@
 package fastfood.entity;
 
+import fastfood.domain.UserResponse;
+
 import javax.persistence.*;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "USERS")
@@ -40,7 +43,7 @@ public class UserEntity extends  BasicEntity{
     @Column(name = "gender")
     private Boolean gender;
 
-    @OneToMany(mappedBy="user", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy="user", fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     private Set<UserRoleEntity> listUserRoles;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
@@ -151,5 +154,18 @@ public class UserEntity extends  BasicEntity{
 
     public void setListOrders(List<OrderEntity> listOrders) {
         this.listOrders = listOrders;
+    }
+
+    public UserResponse convertToUserResponse() {
+        UserResponse userResponse = new UserResponse();
+        userResponse.setFullName(this.getFullName());
+        userResponse.setPassword(this.getPassword());
+        userResponse.setUsername(this.getUsername());
+        userResponse.setId(this.getId().toString());
+        userResponse.setAvatar(this.getAvatar());
+        if(this.getListUserRoles() != null ) {
+            userResponse.setAuthorities(this.getListUserRoles().stream().map(t -> t.getRole().convertToRoleDTO()).collect(Collectors.toList() ));
+        }
+        return userResponse;
     }
 }
