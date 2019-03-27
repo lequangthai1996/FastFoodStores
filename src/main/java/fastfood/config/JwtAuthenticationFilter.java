@@ -2,12 +2,12 @@ package fastfood.config;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fastfood.domain.ErrorCustom;
 import fastfood.exception.CustomException;
 import fastfood.domain.ResponseCommonAPI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -33,14 +33,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String token = tokenProvider.resolveToken(request);
         try {
             if (token != null && tokenProvider.checkTokenIsValid(token)) {
-                UserDetails userDetails = userDetailsService.loadUserByUsername(tokenProvider.getUsernameFromToken(token));
-                Authentication auth = tokenProvider.getAuthentication(token, userDetails);
+                Authentication auth = tokenProvider.getAuthentication(token);
                 SecurityContextHolder.getContext().setAuthentication(auth);
             }
         } catch (CustomException ex ) {
             SecurityContextHolder.clearContext();
             ResponseCommonAPI responseCommonAPI = new ResponseCommonAPI();
-            responseCommonAPI.setError(Collections.singletonList(new CustomException(null, ex.getMessage(), ex.getHttpStatus())));
+            responseCommonAPI.setError(Collections.singletonList(new ErrorCustom("", ex.getCode(), ex.getMessage()) ) );
             responseCommonAPI.setSuccess(false);
 
             response.setStatus(ex.getHttpStatus().value());

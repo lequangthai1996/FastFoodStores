@@ -9,8 +9,8 @@ public enum  Error {
     CONSTRAINT_VIOLATION("C0006", "Constraint violation"),
     METHOD_NOT_SUPPORTED("C0007", "method not supported"),
     MEDIA_TYPE_NOT_SUPPORTED("C0008", "Media type not supported"),
-    BAD_CREDENTIALS("S0001", "Bad credentials"),
-    FORBIDDEN("S0002", "Access denied");
+    BAD_CREDENTIALS("C0009", "Bad credentials"),
+    FORBIDDEN("C0010", "Access denied");
     private String code;
     private String message;
 

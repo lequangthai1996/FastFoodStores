@@ -1,6 +1,8 @@
 package fastfood.entity;
 
+import fastfood.domain.UserDTO;
 import fastfood.domain.UserResponse;
+import fastfood.utils.StringUtils;
 
 import javax.persistence.*;
 import java.util.List;
@@ -161,11 +163,15 @@ public class UserEntity extends  BasicEntity{
         userResponse.setFullName(this.getFullName());
         userResponse.setPassword(this.getPassword());
         userResponse.setUsername(this.getUsername());
-        userResponse.setId(this.getId().toString());
+        userResponse.setId(StringUtils.convertObjectToString(this.getId()));
         userResponse.setAvatar(this.getAvatar());
         if(this.getListUserRoles() != null ) {
             userResponse.setAuthorities(this.getListUserRoles().stream().map(t -> t.getRole().convertToRoleDTO()).collect(Collectors.toList() ));
         }
         return userResponse;
+    }
+
+    public UserDTO convertToUserDTO() {
+        return  new UserDTO(StringUtils.convertObjectToString(this.getId()), this.getUsername());
     }
 }
