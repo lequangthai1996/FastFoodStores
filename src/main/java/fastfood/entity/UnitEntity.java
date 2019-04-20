@@ -10,8 +10,8 @@ import java.util.List;
 public class UnitEntity extends  BasicEntity{
     @Id
     @Column(name = "ID")
-    @SequenceGenerator(name = "IMAGE_SEQ", sequenceName = "IMAGE_SEQ", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "IMAGE_SEQ")
+    @SequenceGenerator(name = "UNIT_SEQ", sequenceName = "UNIT_SEQ", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "UNIT_SEQ")
     private  Long id;
 
     @Column(name = "is_actived", columnDefinition = "BOOLEAN DEFAULT false")

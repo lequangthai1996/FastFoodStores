@@ -34,7 +34,7 @@ public class ItemEntity extends  BasicEntity {
     @OneToMany(mappedBy = "item")
     private List<ImageEntity> listImages;
 
-    @OneToMany(mappedBy = "item", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "item", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private List<ItemCategoryEntity> listItemCategories;
 
     @OneToMany(mappedBy = "item", fetch = FetchType.LAZY)
@@ -133,5 +133,13 @@ public class ItemEntity extends  BasicEntity {
 
     public void setListOrderItems(List<OrderItemEntity> listOrderItems) {
         this.listOrderItems = listOrderItems;
+    }
+
+    public SupplierEntity getSupplier() {
+        return supplier;
+    }
+
+    public void setSupplier(SupplierEntity supplier) {
+        this.supplier = supplier;
     }
 }
