@@ -30,6 +30,17 @@ public class CategoryEntity extends  BasicEntity{
     @OneToMany(mappedBy = "category")
     private List<ItemCategoryEntity> listItemCategories;
 
+    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
+    private List<SupplierCategoryEntity> listSupplierCategories;
+
+    public List<SupplierCategoryEntity> getListSupplierCategories() {
+        return listSupplierCategories;
+    }
+
+    public void setListSupplierCategories(List<SupplierCategoryEntity> listSupplierCategories) {
+        this.listSupplierCategories = listSupplierCategories;
+    }
+
     public List<ItemCategoryEntity> getListItemCategories() {
         return listItemCategories;
     }

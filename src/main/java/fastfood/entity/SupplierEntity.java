@@ -41,6 +41,17 @@ public class SupplierEntity extends  BasicEntity{
     @OneToMany(mappedBy = "supplier")
     private List<OrderEntity> listOrders;
 
+    @OneToMany(mappedBy = "supplier")
+    private List<SupplierCategoryEntity> listSupplierCategories;
+
+    public List<SupplierCategoryEntity> getListSupplierCategories() {
+        return listSupplierCategories;
+    }
+
+    public void setListSupplierCategories(List<SupplierCategoryEntity> listSupplierCategories) {
+        this.listSupplierCategories = listSupplierCategories;
+    }
+
     public Long getId() {
         return id;
     }
