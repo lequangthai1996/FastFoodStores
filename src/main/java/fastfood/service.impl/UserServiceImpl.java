@@ -35,7 +35,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserEntity user = userRepository.findByUsername(username);
+        UserEntity user = userRepository.findByUsernameAndIsDeletedFalse(username);
         if(user == null) {
             throw new UsernameNotFoundException("Invalid username");
         }
@@ -51,7 +51,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public UserResponse getUserByUserName(String username) {
-        UserEntity userEntity = userRepository.findByUsername(username);
+        UserEntity userEntity = userRepository.findByUsernameAndIsDeletedFalse(username);
         if(userEntity == null) {
             return  null;
         } else {

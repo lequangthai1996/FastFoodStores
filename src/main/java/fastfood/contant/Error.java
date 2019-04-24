@@ -10,7 +10,9 @@ public enum  Error {
     METHOD_NOT_SUPPORTED("C0007", "method not supported"),
     MEDIA_TYPE_NOT_SUPPORTED("C0008", "Media type not supported"),
     BAD_CREDENTIALS("C0009", "Bad credentials"),
-    FORBIDDEN("C0010", "Access denied");
+    FORBIDDEN("C0010", "Access denied"),
+    PASSWORD_NOT_MATCH("B0001", "Password not match"),
+    USER_EXIST("B0002", "Username has already existed");
     private String code;
     private String message;
 

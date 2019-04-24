@@ -18,6 +18,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Base64;
@@ -93,4 +95,33 @@ public class ItemController {
         }
         return ResponseEntity.ok().body(res);
     }
+
+    @GetMapping(value = "/products/stores/{id}")
+    public ResponseEntity<ResponseCommonAPI> getListProductOfSupplier(@Valid @NotNull @PathVariable("id") Long id) {
+        ResponseCommonAPI res = new ResponseCommonAPI();
+        try {
+
+        } catch (Exception e) {
+            res.setSuccess(false);
+            res.setMessage(e.getMessage());
+        }
+        if(res.getSuccess()) {
+            return ResponseEntity.ok(res);
+        } else {
+            return ResponseEntity.badRequest().body(res);
+        }
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
