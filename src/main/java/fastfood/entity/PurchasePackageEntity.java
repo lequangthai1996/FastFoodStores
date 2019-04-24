@@ -4,24 +4,24 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "PURCHASE_PACKAGE")
-public class PurchasePackageEntity {
+public class PurchasePackageEntity extends BasicEntity {
     @Id
     @Column(name = "ID")
     @SequenceGenerator(name = "PURCHASE_PACKAGE_SEQ", sequenceName = "PURCHASE_PACKAGE_SEQ", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "PURCHASE_PACKAGE_SEQ")
-    private String id;
+    private Integer id;
 
     @Column(name = "NAME")
     private String name;
 
     @Column(name = "PERIOD")
-    private String period;
+    private Integer period;
 
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -33,11 +33,11 @@ public class PurchasePackageEntity {
         this.name = name;
     }
 
-    public String getPeriod() {
+    public Integer getPeriod() {
         return period;
     }
 
-    public void setPeriod(String period) {
+    public void setPeriod(Integer period) {
         this.period = period;
     }
 }
