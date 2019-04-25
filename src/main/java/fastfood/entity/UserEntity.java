@@ -18,13 +18,13 @@ public class UserEntity extends  BasicEntity{
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "USERS_SEQ")
     private Long id;
 
-    @Column(name="username",nullable = false, unique = false, length = 100)
+    @Column(name="username",nullable = false, unique = true, length = 100)
     private String username;
 
     @Column(name="password", nullable = false)
     private String password;
 
-    @Column(name="email", unique = true)
+    @Column(name="email", unique = false)
     private String email;
 
     @Column(name="address")

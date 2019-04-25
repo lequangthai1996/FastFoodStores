@@ -1,5 +1,7 @@
 package fastfood.entity;
 
+import fastfood.domain.UnitDTO;
+import fastfood.utils.StringUtils;
 import org.hibernate.validator.constraints.EAN;
 
 import javax.persistence.*;
@@ -64,6 +66,14 @@ public class UnitEntity extends  BasicEntity{
 
     public void setListItems(List<ItemEntity> listItems) {
         this.listItems = listItems;
+    }
+
+    public UnitDTO convertToUnitDTO() {
+        UnitDTO unitDTO = new UnitDTO();
+        unitDTO.setId(StringUtils.convertObjectToString(this.getId()));
+        unitDTO.setName(this.getName());
+        unitDTO.setSyntax(this.getSyntax());
+        return unitDTO;
     }
 }
 

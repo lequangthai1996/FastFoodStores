@@ -25,6 +25,7 @@ public class RegisterSalerAccountDTO {
 
     // Saler info => SupplierEntity
     private Integer package_id;
+    private String store_name;
     private String store_address;
     private String store_phone;
     private String backgroundImage;
@@ -154,9 +155,16 @@ public class RegisterSalerAccountDTO {
         return listErrors;
     }
 
+    public String getStore_name() {
+        return store_name;
+    }
+
+    public void setStore_name(String store_name) {
+        this.store_name = store_name;
+    }
+
     public UserEntity toUserEntity() {
         UserEntity userEntity = new UserEntity();
-        userEntity.setPassword(this.getPassword());
         userEntity.setUsername(this.getUsername());
         userEntity.setAddress(this.getAddress());
         userEntity.setAvatar(this.getAvatar());

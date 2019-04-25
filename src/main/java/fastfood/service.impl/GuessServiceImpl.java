@@ -10,6 +10,7 @@ import fastfood.repository.*;
 import fastfood.service.GuessService;
 import fastfood.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -39,6 +40,9 @@ public class GuessServiceImpl implements GuessService {
     @Autowired
     private RoleRepository roleRepository;
 
+    @Autowired
+    private BCryptPasswordEncoder encoder;
+
     @Override
     @Transactional
     public ResponseCommonAPI registerSalerAccount(RegisterSalerAccountDTO registerSalerAccountDTO, MultipartFile[] files) throws Exception{
@@ -67,6 +71,7 @@ public class GuessServiceImpl implements GuessService {
 
         // Create userEntity
         UserEntity newUserEntity = registerSalerAccountDTO.toUserEntity();
+        newUserEntity.setPassword(encoder.encode(registerSalerAccountDTO.getPassword()));
         newUserEntity.setAvatar(registerSalerAccountDTO.getAvatar());
 
         List<String> roles = Arrays.asList(DBConstant.ROLE.SALE.getName(), DBConstant.ROLE.USER.getName());
@@ -85,6 +90,7 @@ public class GuessServiceImpl implements GuessService {
 
         // Create supplierEntity
         SupplierEntity supplierEntity = registerSalerAccountDTO.toSupplierEntity();
+        supplierEntity.setName(registerSalerAccountDTO.getStore_name());
         supplierEntity.setBackgroundImage(registerSalerAccountDTO.getBackgroundImage());
         supplierEntity.setUser(newUserEntity);
 
