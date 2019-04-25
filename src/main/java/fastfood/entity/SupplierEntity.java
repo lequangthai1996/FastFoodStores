@@ -31,7 +31,10 @@ public class SupplierEntity extends  BasicEntity{
     @Column(name = "store_phone")
     private String storePhone;
 
-    @ManyToOne(optional = false)
+    @Column(name = "name")
+    private String name;
+
+    @ManyToOne(optional = false, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "FK_USER_03"))
     private UserEntity user;
 
@@ -40,6 +43,17 @@ public class SupplierEntity extends  BasicEntity{
 
     @OneToMany(mappedBy = "supplier")
     private List<OrderEntity> listOrders;
+
+    @OneToMany(mappedBy = "supplier", cascade = CascadeType.PERSIST)
+    private List<SupplierCategoryEntity> listSupplierCategories;
+
+    public List<SupplierCategoryEntity> getListSupplierCategories() {
+        return listSupplierCategories;
+    }
+
+    public void setListSupplierCategories(List<SupplierCategoryEntity> listSupplierCategories) {
+        this.listSupplierCategories = listSupplierCategories;
+    }
 
     public Long getId() {
         return id;
@@ -119,5 +133,13 @@ public class SupplierEntity extends  BasicEntity{
 
     public void setListOrders(List<OrderEntity> listOrders) {
         this.listOrders = listOrders;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

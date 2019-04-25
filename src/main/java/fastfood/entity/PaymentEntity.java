@@ -1,6 +1,5 @@
 package fastfood.entity;
 
-import sun.tools.tree.OrExpression;
 
 import javax.persistence.*;
 import java.util.Date;

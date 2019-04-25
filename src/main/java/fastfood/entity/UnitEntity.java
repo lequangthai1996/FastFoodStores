@@ -1,5 +1,7 @@
 package fastfood.entity;
 
+import fastfood.domain.UnitDTO;
+import fastfood.utils.StringUtils;
 import org.hibernate.validator.constraints.EAN;
 
 import javax.persistence.*;
@@ -10,8 +12,8 @@ import java.util.List;
 public class UnitEntity extends  BasicEntity{
     @Id
     @Column(name = "ID")
-    @SequenceGenerator(name = "IMAGE_SEQ", sequenceName = "IMAGE_SEQ", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "IMAGE_SEQ")
+    @SequenceGenerator(name = "UNIT_SEQ", sequenceName = "UNIT_SEQ", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "UNIT_SEQ")
     private  Long id;
 
     @Column(name = "is_actived", columnDefinition = "BOOLEAN DEFAULT false")
@@ -64,6 +66,14 @@ public class UnitEntity extends  BasicEntity{
 
     public void setListItems(List<ItemEntity> listItems) {
         this.listItems = listItems;
+    }
+
+    public UnitDTO convertToUnitDTO() {
+        UnitDTO unitDTO = new UnitDTO();
+        unitDTO.setId(StringUtils.convertObjectToString(this.getId()));
+        unitDTO.setName(this.getName());
+        unitDTO.setSyntax(this.getSyntax());
+        return unitDTO;
     }
 }
 

@@ -1,6 +1,7 @@
 package fastfood.entity;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Entity
@@ -24,6 +25,9 @@ public class ItemEntity extends  BasicEntity {
     @Column(name = "quantity")
     private Integer quantity;
 
+    @Column(name = "name")
+    private String name;
+
     @Column(name = "description")
     private String description;
 
@@ -34,7 +38,7 @@ public class ItemEntity extends  BasicEntity {
     @OneToMany(mappedBy = "item")
     private List<ImageEntity> listImages;
 
-    @OneToMany(mappedBy = "item", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "item", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private List<ItemCategoryEntity> listItemCategories;
 
     @OneToMany(mappedBy = "item", fetch = FetchType.LAZY)
@@ -133,5 +137,21 @@ public class ItemEntity extends  BasicEntity {
 
     public void setListOrderItems(List<OrderItemEntity> listOrderItems) {
         this.listOrderItems = listOrderItems;
+    }
+
+    public SupplierEntity getSupplier() {
+        return supplier;
+    }
+
+    public void setSupplier(SupplierEntity supplier) {
+        this.supplier = supplier;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

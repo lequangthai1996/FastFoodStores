@@ -48,6 +48,8 @@ public class TokenProvider implements Serializable {
     private String TOKEN_PREFIX;
 
     public String generateToken(Authentication authentication) throws  Exception {
+
+        UserResponse userResponse = (UserResponse) authentication.getPrincipal();
         AsymmetricCryptography ac = new AsymmetricCryptography();
         PRIVATE_KEY = ac.getPrivate(KEY_STORE_DIR + "/privateKey");
         PUBLIC_KEY = ac.getPublic(KEY_STORE_DIR + "/publicKey");
@@ -55,7 +57,7 @@ public class TokenProvider implements Serializable {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
         return Jwts.builder()
-                .setSubject(authentication.getName())
+                .setSubject(userResponse.getUsername())
                 .claim(AUTHORITY_KEY, authorities)
                 .signWith(SignatureAlgorithm.RS256, PRIVATE_KEY)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
@@ -116,12 +118,17 @@ public class TokenProvider implements Serializable {
                 .getBody();
     }
 
-    public UserDetails getCurrentUserLogin() {
+
+    /**
+     * @description get current user login
+     * @return
+     */
+    public UserResponse getCurrentUserLogin() {
         SecurityContext securityContext = SecurityContextHolder.getContext();
         Authentication authentication = securityContext.getAuthentication();
         if(authentication != null) {
             Object principal = authentication.getPrincipal();
-            return (UserDetails) principal;
+            return principal instanceof UserResponse ? (UserResponse) principal : null;
         }
         return null;
     }
