@@ -2,6 +2,7 @@ package fastfood.controller;
 
 import fastfood.config.TokenProvider;
 import fastfood.domain.ItemDTO;
+import fastfood.domain.ItemResponse;
 import fastfood.domain.ResponseCommonAPI;
 import fastfood.domain.UploadFileResponse;
 import fastfood.service.ItemService;
@@ -23,6 +24,7 @@ import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Base64;
+import java.util.List;
 
 @RestController
 @RequestMapping("/items")
@@ -96,21 +98,6 @@ public class ItemController {
         return ResponseEntity.ok().body(res);
     }
 
-    @GetMapping(value = "/products/stores/{id}")
-    public ResponseEntity<ResponseCommonAPI> getListProductOfSupplier(@Valid @NotNull @PathVariable("id") Long id) {
-        ResponseCommonAPI res = new ResponseCommonAPI();
-        try {
-
-        } catch (Exception e) {
-            res.setSuccess(false);
-            res.setMessage(e.getMessage());
-        }
-        if(res.getSuccess()) {
-            return ResponseEntity.ok(res);
-        } else {
-            return ResponseEntity.badRequest().body(res);
-        }
-    }
 }
 
 
