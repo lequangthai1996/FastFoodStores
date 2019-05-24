@@ -1,11 +1,15 @@
 package fastfood.controller;
 
 import fastfood.config.TokenProvider;
+import fastfood.contant.DefineConstant;
 import fastfood.domain.*;
 import fastfood.service.GuessService;
 import fastfood.service.ItemService;
 import fastfood.service.SupplierService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
@@ -31,18 +35,39 @@ public class GuessController {
     private SupplierService supplierService;
 
 
-    @RequestMapping(value = "/products/store/{id}", method = RequestMethod.GET)
-    public ResponseEntity<ResponseCommonAPI> getListProductOfSupplier(@Valid @NotNull @PathVariable("id") Long id) {
-        ResponseCommonAPI res = new ResponseCommonAPI();
+//    @RequestMapping(value = "/products/store/{id}", method = RequestMethod.GET)
+//    public ResponseEntity<ResponseCommonAPI> getListProductOfSupplier(@Valid @NotNull @PathVariable("id") Long id) {
+//        ResponseCommonAPI res = new ResponseCommonAPI();
+//        try {
+//            List<ItemResponse> listProducts = itemService.getListProductOfStores(id);
+//            res.setSuccess(true);
+//            res.setData(listProducts);
+//            return ResponseEntity.ok(res);
+//        } catch (Exception e) {
+//            res.setSuccess(false);
+//            res.setMessage(e.getMessage());
+//        }
+//        if(res.getSuccess()) {
+//            return ResponseEntity.ok(res);
+//        } else {
+//            return ResponseEntity.badRequest().body(res);
+//        }
+//    }
+
+    @RequestMapping(value = "/stores/list", method = RequestMethod.POST)
+    public ResponseEntity<ResponseCommonAPI> searchListStore(
+            @RequestBody SearchStoreDomain searchStoreDomain,
+            @RequestParam("page") Integer page
+            ) {
+        ResponseCommonAPI res = null ;
+        Pageable pageable = PageRequest.of((page == null || page < 1) ? 0 : page-1, DefineConstant.PAGESIZE);
         try {
-            List<ItemResponse> listProducts = itemService.getListProductOfStores(id);
-            res.setSuccess(true);
-            res.setData(listProducts);
-            return ResponseEntity.ok(res);
+            res  = supplierService.searchSupplier(searchStoreDomain, pageable);
         } catch (Exception e) {
             res.setSuccess(false);
             res.setMessage(e.getMessage());
         }
+
         if(res.getSuccess()) {
             return ResponseEntity.ok(res);
         } else {
@@ -50,25 +75,31 @@ public class GuessController {
         }
     }
 
-    @RequestMapping(value = "/list", method = RequestMethod.POST)
-    public ResponseEntity<ResponseCommonAPI> searchListStore(@RequestBody SearchStoreDomain searchStoreDomain) {
-        ResponseCommonAPI res = new ResponseCommonAPI();
+
+    @RequestMapping(value = "/stores/{id}/items" )
+    public ResponseEntity<ResponseCommonAPI> searchProductOfSpecifyStore(
+            @RequestParam("page") Integer page,
+            @RequestParam("category") Integer category,
+            @PathVariable("id") Long storeId
+    ) {
+        ResponseCommonAPI res = null;
+        Pageable pageable = PageRequest.of(page== null || page < 1 ? 0 : page - 1, DefineConstant.PAGESIZE);
+
         try {
-            List<SupplierResponse>  listSupplier = supplierService.searchSupplier(searchStoreDomain);
-            res.setSuccess(true);
-            res.setData(listSupplier);
+            res = itemService.getListProductOfStores(storeId, category, pageable);
         } catch (Exception e) {
+            res = new ResponseCommonAPI();
             res.setSuccess(false);
             res.setMessage(e.getMessage());
         }
 
         if(res.getSuccess()) {
-            return ResponseEntity.ok(res);
-        } else {
+            return  ResponseEntity.ok(res);
+        }else {
             return ResponseEntity.badRequest().body(res);
         }
-    }
 
+    }
 
 
     @RequestMapping(value = "/register/saler", method = RequestMethod.POST)

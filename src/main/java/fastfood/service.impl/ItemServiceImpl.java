@@ -1,9 +1,11 @@
 package fastfood.service.impl;
 
 import fastfood.contant.DBConstant;
+import fastfood.contant.DefineConstant;
 import fastfood.domain.CategoryDTO;
 import fastfood.domain.ItemDTO;
 import fastfood.domain.ItemResponse;
+import fastfood.domain.ResponseCommonAPI;
 import fastfood.entity.*;
 import fastfood.repository.*;
 import fastfood.service.ItemService;
@@ -11,6 +13,7 @@ import fastfood.utils.StringUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -90,9 +93,9 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemResponse> getListProductOfStores(Long id) throws Exception{
+    public ResponseCommonAPI getListProductOfStores(Long storeId, Integer categoryId, Pageable pageable) throws Exception{
 
-        List<ItemEntity> listItemEntity = itemRepository.findBySupplier_IdAndSupplier_IsDeletedAndIsDeletedFalseAndIsActivedTrue(id, false);
+        List<ItemEntity> listItemEntity = itemRepository.findBySupplierAndCategoryAndPagination(storeId, categoryId, pageable);
 
         List<ItemResponse> listItemResponse = listItemEntity.stream().map(t-> {
             ItemResponse itemResponse = new ItemResponse();
@@ -110,8 +113,16 @@ public class ItemServiceImpl implements ItemService {
             return itemResponse;
         }).collect(Collectors.toList());
 
+        Integer totalItems = itemRepository.getTotalItemWithSupplierAndCategory(storeId, categoryId);
 
-        return listItemResponse;
+        ResponseCommonAPI res = new ResponseCommonAPI();
+        res.setSuccess(true);
+        res.setData(listItemResponse);
+        res.setTotalPages((int)Math.ceil((float)totalItems/ DefineConstant.PAGESIZE));
+        res.setNumber(pageable.getPageNumber()+1);
+
+
+        return res;
     }
 
 

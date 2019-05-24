@@ -1,6 +1,7 @@
 package fastfood.domain;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
@@ -15,6 +16,10 @@ public class ResponseCommonAPI implements Serializable {
     private Integer totalRow;
     private Boolean success;
 
+    @JsonProperty(value = "totalPages")
+    private Integer totalPages;
+    private Integer number;
+
     public ResponseCommonAPI() {
     }
 
@@ -24,6 +29,22 @@ public class ResponseCommonAPI implements Serializable {
         this.message = message;
         this.totalRow = totalRow;
         this.success = success;
+    }
+
+    public Integer getTotalPages() {
+        return totalPages;
+    }
+
+    public void setTotalPages(Integer totalPages) {
+        this.totalPages = totalPages;
+    }
+
+    public Integer getNumber() {
+        return number;
+    }
+
+    public void setNumber(Integer number) {
+        this.number = number;
     }
 
     public static Builder builder() {

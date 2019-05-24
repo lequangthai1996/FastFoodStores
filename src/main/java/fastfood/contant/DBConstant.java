@@ -19,4 +19,19 @@ public class DBConstant {
             this.name = name;
         }
     }
+
+    public enum LEVEL {
+        PARENT(0),
+        CHILD(1);
+
+        private Integer value;
+
+        LEVEL(Integer value) {
+            this.value =value;
+        }
+
+        public Integer getValue() {
+            return value;
+        }
+    }
 }

@@ -7,7 +7,7 @@ import java.util.List;
 
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class CategoryDTO {
-    private Long id;
+    private Integer id;
     private String name;
     private String description;
     private Integer level;
@@ -16,11 +16,11 @@ public class CategoryDTO {
     private List<ItemDTO> listItems;
 
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

@@ -10,6 +10,8 @@ public class SupplierResponse {
     private String name;
     private String backgroundImage;
 
+
+
     public String getId() {
         return id;
     }
