@@ -1,6 +1,6 @@
 package fastfood.utils;
 
-import org.springframework.lang.Nullable;
+import com.sun.istack.internal.Nullable;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -20,7 +20,7 @@ public final class StringUtils {
     }
 
 
-    public static boolean isEmpty(@Nullable  Object str) {
+    public static boolean isEmpty(@Nullable Object str) {
         return (str == null || "".equals(str));
     }
 

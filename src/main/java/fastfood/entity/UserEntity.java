@@ -166,6 +166,8 @@ public class UserEntity extends  BasicEntity{
         userResponse.setId(StringUtils.convertObjectToString(this.getId()));
         userResponse.setAvatar(this.getAvatar());
         userResponse.setEmail(this.getEmail());
+        userResponse.setPhone(this.getPhone());
+        userResponse.setAddress(this.getAddress());
         if(this.getListUserRoles() != null ) {
             userResponse.setAuthorities(this.getListUserRoles().stream().map(t -> t.getRole().convertToRoleDTO()).collect(Collectors.toList() ));
         }

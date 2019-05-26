@@ -15,6 +15,8 @@ public class UserResponse {
     private String fullName;
     private String avatar;
     private String email;
+    private String address;
+    private String phone;
     @JsonIgnore
     private String password;
     private List<RoleDTO>  authorities;
@@ -31,6 +33,23 @@ public class UserResponse {
         this.avatar = avatar;
         this.authorities = authorities;
         this.email = email;
+    }
+
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public String getEmail() {
