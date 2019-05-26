@@ -1,9 +1,8 @@
 package fastfood.service.impl;
 
 import fastfood.contant.DBConstant;
-import fastfood.domain.CategoryDTO;
-import fastfood.domain.ItemDTO;
-import fastfood.domain.ItemResponse;
+import fastfood.contant.DefineConstant;
+import fastfood.domain.*;
 import fastfood.entity.*;
 import fastfood.repository.*;
 import fastfood.service.ItemService;
@@ -11,15 +10,14 @@ import fastfood.utils.StringUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -50,7 +48,7 @@ public class ItemServiceImpl implements ItemService {
 
 
         // set unit
-        UnitEntity unitEntity = unitRepository.findById(itemDTO.getUnit_id()).get();
+        UnitEntity unitEntity = unitRepository.getOne(itemDTO.getUnit_id());
         if(unitEntity!= null) {
             itemEntity.setUnit(unitEntity);
         }
@@ -90,9 +88,9 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemResponse> getListProductOfStores(Long id) throws Exception{
+    public ResponseCommonAPI getListProductOfStores(Long storeId, Integer categoryId, Pageable pageable) throws Exception{
 
-        List<ItemEntity> listItemEntity = itemRepository.findBySupplier_IdAndSupplier_IsDeletedAndIsDeletedFalseAndIsActivedTrue(id, false);
+        List<ItemEntity> listItemEntity = itemRepository.findBySupplierAndCategoryAndPagination(storeId, categoryId, pageable);
 
         List<ItemResponse> listItemResponse = listItemEntity.stream().map(t-> {
             ItemResponse itemResponse = new ItemResponse();
@@ -110,8 +108,68 @@ public class ItemServiceImpl implements ItemService {
             return itemResponse;
         }).collect(Collectors.toList());
 
+        Integer totalItems = itemRepository.getTotalItemWithSupplierAndCategory(storeId, categoryId);
 
-        return listItemResponse;
+        ResponseCommonAPI res = new ResponseCommonAPI();
+        res.setSuccess(true);
+        res.setData(listItemResponse);
+        res.setTotalPages((int)Math.ceil((float)totalItems/ DefineConstant.PAGESIZE));
+        res.setNumber(pageable.getPageNumber()+1);
+
+
+        return res;
+    }
+
+
+    public ItemVO convertVO(ItemEntity item) {
+
+//        List<PromotionItemVO> promotionItemVOS = new ArrayList<>();
+//        if (item.getPromotionItems() != null) {
+//            for (PromotionItem promotionItem: item.getPromotionItems()
+//            ) {
+//                PromotionItemVO promotionItemVO = PromotionItemVOBuilder.aPromotionItemVO()
+//                        .withId(promotionItem.getId())
+//                        .withPercent(promotionItem.getPercent()).build();
+//                promotionItemVOS.add(promotionItemVO);
+//            }
+//        }
+//        Set<CategoryVO> categoryVOSet = new HashSet<>();
+//        for(Category category: item.getCategories()){
+//            CategoryVO categoryVO = CategoryVOBuilder.aCategoryVO()
+//                    .withId(category.getId())
+//                    .withLevelCategory(category.getLevelCategory())
+//                    .withParentId(category.getParentId())
+//                    .withDescription(category.getDescription())
+//                    .withName(category.getName())
+//                    .build();
+//            categoryVOSet.add(categoryVO);
+//        }
+//        UnitVO unitVO = UnitVOBuilder.anUnitVO().withId(item.getUnit().getId())
+//                .withName(item.getUnit().getName())
+//                .withSyntax(item.getUnit().getSyntax())
+//                .build();
+//        List<ImageItemVO> imageItemVOS = new ArrayList<>();
+//        if (item.getImageItems() != null) {
+//            for (ImageItem imageItem: item.getImageItems()) {
+//                ImageItemVO imageItemVO = new ImageItemVO();
+//                imageItemVO.setId(imageItem.getId());
+//                imageItemVO.setImage(imageItem.getImage());
+//                imageItemVOS.add(imageItemVO);
+//            }
+//        }
+//        ItemVO itemVO = ItemVOBuilder.anItemVO().withId(item.getId())
+//                .withName(item.getName())
+//                .withPrice(item.getPrice())
+//                .withAvatar(item.getAvatar())
+//                .withDescription(item.getDescription())
+//                .withQuantity(item.getQuantity())
+//                .withPromotions(promotionItemVOS)
+//                .withCreatedAt(item.getCreatedAt())
+//                .withCategory(categoryVOSet)
+//                .withImageItems(imageItemVOS).withUnit(unitVO)
+//                .build();
+//        return itemVO;
+        return new ItemVO();
     }
 
 

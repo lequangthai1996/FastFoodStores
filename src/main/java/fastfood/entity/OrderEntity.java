@@ -2,6 +2,7 @@ package fastfood.entity;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "ORDERS")
@@ -38,12 +39,23 @@ public class OrderEntity extends  BasicEntity {
     @JoinColumn(name = "supplier_id", foreignKey = @ForeignKey(name = "FK_SUPPLIER_01"))
     private SupplierEntity supplier;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = true)
     @JoinColumn(name = "ship_id", foreignKey = @ForeignKey(name = "FK_SHIP_01"))
     private ShipEntity ship;
 
     @OneToOne(mappedBy = "order")
     private PaymentEntity payment;
+
+    @OneToMany(mappedBy = "order")
+    private List<OrderItemEntity> listOrderItems;
+
+    public List<OrderItemEntity> getListOrderItems() {
+        return listOrderItems;
+    }
+
+    public void setListOrderItems(List<OrderItemEntity> listOrderItems) {
+        this.listOrderItems = listOrderItems;
+    }
 
     public PaymentEntity getPayment() {
         return payment;
