@@ -34,7 +34,7 @@ public class FileStorageService {
 
     public String storeFile(MultipartFile file) {
         fileStorageLocation = Paths.get(pathFile).toAbsolutePath().normalize();
-        String fileName = RenameFile.renameFile(StringUtils.cleanPath(file.getOriginalFilename()));
+        String fileName = file.getOriginalFilename();//RenameFile.renameFile(StringUtils.cleanPath(file.getOriginalFilename()));
 
         try{
             if(fileName.contains("..")) {

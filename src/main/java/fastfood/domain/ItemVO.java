@@ -4,9 +4,9 @@ import java.util.Date;
 
 public class ItemVO {
 
-    private Integer id;
+    private Long id;
     private String name;
-    private Float price;
+    private Double price;
     private String avatar;
     private Boolean status;
     private Integer quantity;
@@ -18,11 +18,11 @@ public class ItemVO {
     private UnitVO unit;
     private SupplierVO supplier;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -34,11 +34,11 @@ public class ItemVO {
         this.name = name;
     }
 
-    public Float getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(Float price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 

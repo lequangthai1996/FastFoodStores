@@ -13,4 +13,6 @@ public interface CategoryRepository extends JpaRepository<CategoryEntity, Intege
     List<CategoryEntity> findByIdInAndIsDeletedFalse(List<Integer> listIds);
 
     List<CategoryEntity> findByLevelAndIsDeletedFalse(Integer level);
+
+    List<CategoryEntity> findByListSupplierCategories_Supplier_IdAndIsDeletedFalseAndLevel(Long supplierID, Integer level);
 }

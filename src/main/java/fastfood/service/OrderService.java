@@ -8,7 +8,7 @@ import org.springframework.data.domain.Page;
 public interface OrderService {
     public ResponseCommonAPI createOrder(OrderVO order) throws Exception;
     public Page<OrderVO> getOrderByUser(UserEntity user, int page, int size, String sort);
-    public Page<OrderVO> getOrderByStatus(byte status, int page, int size, String sort);
+    public Page<OrderVO> getOrderByStatus(int status, int page, int size, String sort, Long supplierID);
     OrderVO deleteItem(Long id);
     OrderVO updateStatus(Long id, Integer status);
     OrderVO getByID(Long id);

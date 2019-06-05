@@ -5,6 +5,7 @@ import fastfood.exception.CustomException;
 import fastfood.contant.Error;
 import fastfood.service.UserService;
 import fastfood.utils.AsymmetricCryptography;
+import fastfood.utils.StringUtils;
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -83,10 +84,8 @@ public class TokenProvider implements Serializable {
 
     public String resolveToken(HttpServletRequest req) {
         String bearerToken = req.getHeader(HEADER_STRING);
-        if (bearerToken != null && bearerToken.startsWith(TOKEN_PREFIX)) {
-            return bearerToken.substring(7);
-        }
-        return null;
+        if(StringUtils.isEmpty(bearerToken)) return null;
+        return bearerToken;
     }
 
     public boolean checkTokenIsValid(final String token) {

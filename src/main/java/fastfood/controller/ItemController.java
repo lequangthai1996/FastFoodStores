@@ -1,10 +1,9 @@
 package fastfood.controller;
 
 import fastfood.config.TokenProvider;
-import fastfood.domain.ItemDTO;
-import fastfood.domain.ItemResponse;
-import fastfood.domain.ResponseCommonAPI;
-import fastfood.domain.UploadFileResponse;
+import fastfood.domain.*;
+import fastfood.entity.ItemEntity;
+import fastfood.service.CategoryService;
 import fastfood.service.ItemService;
 import fastfood.service.impl.FileStorageService;
 import fastfood.utils.StringUtils;
@@ -12,6 +11,7 @@ import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -44,7 +45,8 @@ public class ItemController {
     @Autowired
     private TokenProvider tokenProvider;
 
-
+    @Autowired
+    private CategoryService categoryService;
 
 
     @PreAuthorize("hasAnyRole('ROLE_SALE')")
@@ -68,7 +70,7 @@ public class ItemController {
             contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
 
 
-            if(contentType == null) {
+            if (contentType == null) {
                 contentType = "application/octet-stream";
             }
 
@@ -80,19 +82,18 @@ public class ItemController {
         return null;
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_SALE')")
-    @PostMapping("/add")
-    public ResponseEntity<ResponseCommonAPI> addProduct(ItemDTO itemDTO, MultipartFile file) {
+    //@PreAuthorize("hasAnyRole('ROLE_SALE')")
+    @PostMapping("/create")
+    public ResponseEntity<ResponseCommonAPI> addProduct(@RequestBody ItemDTO itemDTO) {
 
-        itemDTO.setCurrentUserId(tokenProvider.getCurrentUserLogin() != null ? tokenProvider.getCurrentUserLogin().getId() : null);
+        //  itemDTO.setCurrentUserId(tokenProvider.getCurrentUserLogin() != null ? tokenProvider.getCurrentUserLogin().getId() : null);
+        itemDTO.setSupplier_id(16l);
+        itemDTO.setCurrentUserId("16");
         ResponseCommonAPI res = new ResponseCommonAPI();
         String avatar = null;
 
         try {
-            if (file != null && !file.isEmpty()) {
-                avatar = fileStorageService.storeFile(file);
-            }
-            itemDTO.setAvatar(!StringUtils.isEmpty(avatar) ? avatar : null);
+
             if (itemService.addItem(itemDTO)) {
                 res.setSuccess(true);
 
@@ -101,9 +102,52 @@ public class ItemController {
             }
         } catch (Exception e) {
             res.setSuccess(false);
+            res.setMessage(e.getMessage());
         }
         return ResponseEntity.ok().body(res);
     }
+
+    @RequestMapping("/all")
+    public ResponseEntity<ResponseCommonAPI> getAll(@RequestParam("page") int page,
+                               @RequestParam("size") int size,
+                               @RequestParam("sort") String sort,
+                               @RequestParam(value = "category", required = false) String category
+    ) {
+
+        //String currentUserID = tokenProvider.getCurrentUserLogin().getId();
+        String currentUserID = "16";
+        ResponseCommonAPI res = new ResponseCommonAPI();
+        Page<ItemVO>  resultPage = null;
+        try {
+            if (category == null) {
+                resultPage = itemService.searchItems(page, size, sort, Long.parseLong(currentUserID));
+                if (page > resultPage.getTotalPages()) {
+                    new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+                }
+                res.setSuccess(true);
+                res.setData(resultPage);
+            } else {
+                Integer categoryId = Integer.parseInt(category);
+                resultPage = itemService.searchItemsByCategory(Long.parseLong(currentUserID), categoryId, page, size, sort);
+                if (page > resultPage.getTotalPages()) {
+                    new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+                }
+                res.setSuccess(true);
+                res.setData(resultPage);
+            }
+        } catch (Exception e) {
+            res.setSuccess(false);
+            res.setMessage(e.getMessage());
+        }
+
+
+        if(res.getSuccess()) {
+            return ResponseEntity.ok(res);
+        }else{
+            return ResponseEntity.badRequest().body(res);
+        }
+    }
+
 
 }
 

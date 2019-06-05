@@ -17,6 +17,7 @@ public class UserResponse {
     private String email;
     private String address;
     private String phone;
+
     @JsonIgnore
     private String password;
     private List<RoleDTO>  authorities;

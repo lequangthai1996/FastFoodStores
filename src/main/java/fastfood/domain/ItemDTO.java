@@ -8,15 +8,23 @@ import java.util.List;
 public class ItemDTO {
     private String name;
     private Double price;
+    private String avatar;
     private Integer quantity;
     private String description;
     private Boolean active;
     private Long unit_id;
     private List<Integer> categories;
+    private UnitDTO unit;
     private Long supplier_id;
-    private String avatar;
     private String currentUserId;
 
+    public UnitDTO getUnit() {
+        return unit;
+    }
+
+    public void setUnit(UnitDTO unit) {
+        this.unit = unit;
+    }
 
     public String getCurrentUserId() {
         return currentUserId;

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 public class LoginResponse {
     private  UserResponse user;
     private  String token;
+    private static Integer expire = 604800;
 
     public LoginResponse(UserResponse user, String token) {
         this.user = user;
@@ -26,5 +27,13 @@ public class LoginResponse {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public static Integer getExpire() {
+        return expire;
+    }
+
+    public static void setExpire(Integer expire) {
+        LoginResponse.expire = expire;
     }
 }

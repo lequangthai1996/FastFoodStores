@@ -23,6 +23,10 @@ public class SupplierServiceImpl implements SupplierService {
 
     @Autowired
     private SupplierRepository supplierRepository;
+
+    @Autowired
+    private FileStorageService fileStorageService;
+
     @Override
     public ResponseCommonAPI searchSupplier(SearchStoreDomain searchStoreDomain, Pageable pageable) throws  Exception{
         String keySearch = null;
@@ -37,9 +41,9 @@ public class SupplierServiceImpl implements SupplierService {
             searchWord = "%%";
         }
         List<SupplierEntity> listSuppliers = null;
-        if(!CollectionUtils.isEmpty(searchStoreDomain.getCategories())) {
-            listSuppliers = supplierRepository.searchSupplierEntityWithListCategoriesId(false, searchWord, searchWord, searchStoreDomain.getCategories(), pageable);
-            totalRows = supplierRepository.searchSupplierEntityWithListCategorieIdReturnTotalPages(false, searchWord, searchWord, searchStoreDomain.getCategories());
+        if(searchStoreDomain.getCategories() != 0) {
+            listSuppliers = supplierRepository.searchSupplierEntityWithListCategoriesId(false, searchStoreDomain.getCategories(),searchWord, searchWord,  pageable);
+            totalRows = supplierRepository.searchSupplierEntityWithListCategorieIdReturnTotalPages(false,  searchStoreDomain.getCategories(), searchWord, searchWord);
 
         } else {
             listSuppliers = supplierRepository.searchSupplierEntity(false, searchWord, searchWord, pageable);
@@ -52,7 +56,9 @@ public class SupplierServiceImpl implements SupplierService {
                 SupplierResponse supplierResponse = new SupplierResponse();
                 supplierResponse.setId(t.getId().toString());
                 supplierResponse.setName(t.getName());
-                supplierResponse.setBackgroundImage(t.getBackgroundImage());
+                if(!StringUtils.isEmpty(t.getBackgroundImage())) {
+                    supplierResponse.setBackgroundImage(fileStorageService.loadImageBase64(t.getBackgroundImage()));
+                }
                 supplierResponse.setStoreAddress(t.getStoreAddress());
                 return supplierResponse;
             }).collect(Collectors.toList());

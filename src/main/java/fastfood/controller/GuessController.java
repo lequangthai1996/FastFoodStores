@@ -60,7 +60,7 @@ public class GuessController {
             @RequestParam("page") Integer page
             ) {
         ResponseCommonAPI res = null ;
-        Pageable pageable = new PageRequest((page == null || page < 1) ? 0 : page-1, DefineConstant.PAGESIZE);
+        Pageable pageable =  PageRequest.of((page == null || page < 1) ? 0 : page-1, DefineConstant.PAGESIZE);
         try {
             res  = supplierService.searchSupplier(searchStoreDomain, pageable);
         } catch (Exception e) {
@@ -83,7 +83,7 @@ public class GuessController {
             @PathVariable("id") Long storeId
     ) {
         ResponseCommonAPI res = null;
-        Pageable pageable = new PageRequest(page== null || page < 1 ? 0 : page - 1, DefineConstant.PAGESIZE);
+        Pageable pageable = PageRequest.of(page== null || page < 1 ? 0 : page - 1, DefineConstant.PAGESIZE);
 
         try {
             res = itemService.getListProductOfStores(storeId, category, pageable);

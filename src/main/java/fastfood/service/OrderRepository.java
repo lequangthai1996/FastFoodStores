@@ -11,5 +11,5 @@ import org.springframework.stereotype.Repository;
 public interface OrderRepository extends JpaRepository<OrderEntity,Long> {
         Page<OrderEntity> findAllByUser(UserEntity user, Pageable pageable);
 
-        Page<OrderEntity> findAllByStatus(byte status, Pageable pageable);
+        Page<OrderEntity> findAllByStatusAndIsDeletedFalseAndSupplier_Id(int status, Long supplierId, Pageable pageable);
 }

@@ -8,6 +8,7 @@ import fastfood.domain.LoginResponse;
 import fastfood.domain.ResponseCommonAPI;
 import fastfood.domain.UserResponse;
 import fastfood.service.UserService;
+import fastfood.service.impl.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,10 +30,13 @@ public class AuthenController {
     private  TokenProvider tokenProvider;
 
     @Autowired
+    private FileStorageService fileStorageService;
+
+    @Autowired
     private UserService userService;
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public ResponseEntity<Object> login(@Valid @RequestBody LoginDTO loginDTO) throws Exception {
+    public ResponseEntity<ResponseCommonAPI> login(@Valid @RequestBody LoginDTO loginDTO) throws Exception {
         Object responseBody = null;
         HttpStatus httpStatus = null;
 
@@ -44,13 +48,37 @@ public class AuthenController {
         final  String token = tokenProvider.generateToken(authentication);
 
         UserResponse userResponse = (UserResponse) authentication.getPrincipal();
+        userResponse.setAvatar(fileStorageService.loadImageBase64(userResponse.getAvatar()));
 
         responseBody = new LoginResponse(userResponse, token);
 
         ResponseCommonAPI res= new ResponseCommonAPI();
         res.setSuccess(true);
         res.setData(responseBody);
-        return new ResponseEntity<Object>(responseBody, HttpStatus.OK);
+        return ResponseEntity.ok(res);
+    }
+
+    @RequestMapping(value = "/saler", method = RequestMethod.POST)
+    public ResponseEntity<ResponseCommonAPI> loginSaler(@Valid @RequestBody LoginDTO loginDTO) throws Exception {
+        Object responseBody = null;
+        HttpStatus httpStatus = null;
+
+        final Authentication authentication = authenticationManager.authenticate(
+                new CustomAuthenticationToken(loginDTO.getUsername(), loginDTO.getPassword()));
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        final  String token = tokenProvider.generateToken(authentication);
+
+        UserResponse userResponse = (UserResponse) authentication.getPrincipal();
+        userResponse.setAvatar(fileStorageService.loadImageBase64(userResponse.getAvatar()));
+
+        responseBody = new LoginResponse(userResponse, token);
+
+        ResponseCommonAPI res= new ResponseCommonAPI();
+        res.setSuccess(true);
+        res.setData(responseBody);
+        return ResponseEntity.ok(res);
     }
 
 

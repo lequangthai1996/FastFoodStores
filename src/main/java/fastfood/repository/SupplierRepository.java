@@ -20,8 +20,8 @@ public interface SupplierRepository extends JpaRepository<SupplierEntity, Long> 
             "inner join supplierEntity.listSupplierCategories as supplierCategoryEntity " +
             "inner join supplierCategoryEntity.category category " +
             "where  supplierEntity.isDeleted = ?1 " +
-            "and (lower(itemEntity.name) like ?2 or lower(category.name) like ?3 and category.id in ?4)")
-    List<SupplierEntity> searchSupplierEntityWithListCategoriesId(Boolean isDeleted, String productName, String categoryName, List<Integer> listIds, Pageable pageable);
+            "and (category.id = ?2 and ( lower(itemEntity.name) like ?3 or lower(category.name) like ?4 ))")
+    List<SupplierEntity> searchSupplierEntityWithListCategoriesId(Boolean isDeleted, Integer listIds, String productName, String categoryName, Pageable pageable);
 
     @Query("select distinct supplierEntity from SupplierEntity as supplierEntity " +
             "inner join supplierEntity.listItems as itemEntity " +
@@ -36,8 +36,8 @@ public interface SupplierRepository extends JpaRepository<SupplierEntity, Long> 
             "inner join supplierEntity.listSupplierCategories as supplierCategoryEntity " +
             "inner join supplierCategoryEntity.category category " +
             "where  supplierEntity.isDeleted = ?1 " +
-            "and (lower(itemEntity.name) like ?2 or lower(category.name) like ?3 and category.id in ?4)")
-    int searchSupplierEntityWithListCategorieIdReturnTotalPages(boolean b, String searchWord, String searchWord1, List<Integer> categories);
+            "and (category.id = ?2 and ( lower(itemEntity.name) like ?3 or lower(category.name) like ?4 ))")
+    int searchSupplierEntityWithListCategorieIdReturnTotalPages(boolean b,  Integer categories, String searchWord, String searchWord1);
 
     @Query("select count(distinct supplierEntity) from SupplierEntity as supplierEntity " +
             "inner join supplierEntity.listItems as itemEntity " +

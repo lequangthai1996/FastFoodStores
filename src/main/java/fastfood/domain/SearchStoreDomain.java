@@ -7,14 +7,14 @@ import java.util.List;
 
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class SearchStoreDomain {
-    private List<Integer> categories;
+    private Integer categories;
     private String keySearch;
 
-    public List<Integer> getCategories() {
+    public Integer getCategories() {
         return categories;
     }
 
-    public void setCategories(List<Integer> categories) {
+    public void setCategories(Integer categories) {
         this.categories = categories;
     }
 

@@ -9,9 +9,9 @@ import java.util.Date;
 import java.util.Set;
 
 public final class ItemVOBuilder {
-    private Integer id;
+    private Long id;
     private String name;
-    private Float price;
+    private Double price;
     private String avatar;
     private Boolean status;
     private Integer quantity;
@@ -33,7 +33,7 @@ public final class ItemVOBuilder {
         return new ItemVOBuilder();
     }
 
-    public ItemVOBuilder withId(Integer id) {
+    public ItemVOBuilder withId(Long id) {
         this.id = id;
         return this;
     }
@@ -43,7 +43,7 @@ public final class ItemVOBuilder {
         return this;
     }
 
-    public ItemVOBuilder withPrice(Float price) {
+    public ItemVOBuilder withPrice(Double price) {
         this.price = price;
         return this;
     }

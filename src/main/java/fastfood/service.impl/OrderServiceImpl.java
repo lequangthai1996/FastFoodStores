@@ -4,6 +4,7 @@ import com.google.common.base.Function;
 import com.paypal.api.payments.Order;
 import fastfood.build.OrderVOBuilder;
 import fastfood.contant.DBConstant;
+import fastfood.contant.DefineConstant;
 import fastfood.domain.OrderItemVO;
 import fastfood.domain.OrderVO;
 import fastfood.domain.ResponseCommonAPI;
@@ -159,17 +160,25 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Page<OrderVO> getOrderByStatus(byte status, int page, int size, String sort) {
+    public Page<OrderVO> getOrderByStatus(int status, int page, int size, String sort, Long userId) {
         Page<OrderEntity> orders;
         String direction, keySort;
+
+
         if (sort != null && !sort.equals("") && (sort.charAt(0) == ' ' || sort.charAt(0) == '-')) {
              direction = sort.substring(0,1);
              keySort = sort.substring(1,sort.length());
-            orders = orderRepository.findAllByStatus(status,  PageRequest.of(page, size,
-                    direction.equals("-") ? Sort.Direction.DESC : Sort.Direction.ASC,
-                    keySort));
+
+             SupplierEntity supplierEntity = supplierRepository.findByUser_IdAndUser_IsDeleted(userId, false);
+             if(supplierEntity != null) {
+                 orders = orderRepository.findAllByStatusAndIsDeletedFalseAndSupplier_Id(status, supplierEntity.getId(), PageRequest.of(page, size,
+                         direction.equals("-") ? Sort.Direction.DESC : Sort.Direction.ASC,
+                         keySort));
+             } else {
+                 orders = null;
+             }
         } else {
-            orders = orderRepository.findAllByStatus(status,  PageRequest.of(page, size));
+            orders = null;
         }
         if (orders != null) {
 
@@ -179,12 +188,9 @@ public class OrderServiceImpl implements OrderService {
                     return convertVOWithoutOrderItem(source);
                 }
             });
+        } else {
+            return null;
         }
-
-
-
-
-        return null;
     }
 
     public OrderVO convertVOWithoutOrderItem(OrderEntity order) {
