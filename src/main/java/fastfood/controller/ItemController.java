@@ -86,9 +86,8 @@ public class ItemController {
     @PostMapping("/create")
     public ResponseEntity<ResponseCommonAPI> addProduct(@RequestBody ItemDTO itemDTO) {
 
-        //  itemDTO.setCurrentUserId(tokenProvider.getCurrentUserLogin() != null ? tokenProvider.getCurrentUserLogin().getId() : null);
-        itemDTO.setSupplier_id(16l);
-        itemDTO.setCurrentUserId("16");
+        itemDTO.setCurrentUserId(tokenProvider.getCurrentUserLogin() != null ? tokenProvider.getCurrentUserLogin().getId() : null);
+        itemDTO.setCurrentUserId(tokenProvider.getCurrentUserLogin().getId());
         ResponseCommonAPI res = new ResponseCommonAPI();
         String avatar = null;
 
@@ -114,8 +113,7 @@ public class ItemController {
                                @RequestParam(value = "category", required = false) String category
     ) {
 
-        //String currentUserID = tokenProvider.getCurrentUserLogin().getId();
-        String currentUserID = "16";
+        String currentUserID = tokenProvider.getCurrentUserLogin().getId();
         ResponseCommonAPI res = new ResponseCommonAPI();
         Page<ItemVO>  resultPage = null;
         try {

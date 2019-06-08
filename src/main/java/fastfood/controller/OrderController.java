@@ -3,6 +3,7 @@ package fastfood.controller;
 import fastfood.config.TokenProvider;
 import fastfood.domain.OrderVO;
 import fastfood.domain.ResponseCommonAPI;
+import fastfood.entity.OrderEntity;
 import fastfood.service.OrderService;
 import fastfood.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,28 @@ public class OrderController {
 
     @Autowired
     private TokenProvider tokenProvider;
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ResponseCommonAPI> deleteOrder(@PathVariable("id") Long id) {
+        ResponseCommonAPI res = new ResponseCommonAPI();
+        try {
+            OrderEntity orderEntity = orderService.deleteItem(id);
+            if(orderEntity != null) {
+                res.setSuccess(true);
+            }else {
+                res.setSuccess(false);
+            }
+        } catch ( Exception e) {
+            res.setSuccess(false);
+            res.setMessage(e.getMessage());
+        }
+
+        if(res.getSuccess()) {
+            return ResponseEntity.ok(res);
+        } else {
+            return ResponseEntity.badRequest().body(res);
+        }
+    }
 
     @PostMapping("/createOrder")
     public ResponseEntity<ResponseCommonAPI> createOrder(@RequestBody OrderVO orderVO) {
@@ -58,6 +81,54 @@ public class OrderController {
             res.setData(pageOrder);
         } catch (Exception e) {
             res = new ResponseCommonAPI();
+            res.setSuccess(false);
+            res.setMessage(e.getMessage());
+        }
+
+        if(res.getSuccess()) {
+            return ResponseEntity.ok(res);
+        } else {
+            return ResponseEntity.badRequest().body(res);
+        }
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ResponseCommonAPI> getDetailOrder(@PathVariable("id") Long id){
+        String currentUserID = tokenProvider.getCurrentUserLogin().getId();
+        ResponseCommonAPI res = res = new ResponseCommonAPI();;
+        try {
+            OrderVO  orderVO = orderService.getByID(id);
+            if(orderVO != null) {
+                res.setSuccess(true);
+                res.setData(orderVO);
+            } else {
+                res.setSuccess(false);
+            }
+        } catch (Exception e) {
+            res.setSuccess(false);
+            res.setMessage(e.getMessage());
+        }
+
+        if(res.getSuccess()) {
+            return ResponseEntity.ok(res);
+        } else {
+            return ResponseEntity.badRequest().body(res);
+        }
+    }
+
+    @PutMapping("/{orderID}/status/{status}")
+    public ResponseEntity<ResponseCommonAPI> updateStatus(@PathVariable("orderID") Long orderID, @PathVariable("status") Integer status) {
+        String currentUserID = tokenProvider.getCurrentUserLogin().getId();
+        ResponseCommonAPI res = res = new ResponseCommonAPI();;
+        try {
+            OrderVO  orderVO = orderService.updateStatus(orderID, status);
+            if(orderVO != null) {
+                res.setSuccess(true);
+                res.setData(orderVO);
+            } else {
+                res.setSuccess(false);
+            }
+        } catch (Exception e) {
             res.setSuccess(false);
             res.setMessage(e.getMessage());
         }

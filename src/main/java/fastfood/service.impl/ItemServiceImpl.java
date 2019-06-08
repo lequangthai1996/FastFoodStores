@@ -60,7 +60,7 @@ public  class ItemServiceImpl implements ItemService {
         }
 
         //set supplier
-        SupplierEntity supplierEntity = supplierRepository.findByIdAndIsDeleted(itemDTO.getSupplier_id(), false);
+        SupplierEntity supplierEntity = supplierRepository.findByUser_IdAndUser_IsDeleted(StringUtils.convertStringToLongOrNull(itemDTO.getCurrentUserId()), false);
         if(supplierEntity != null) {
             itemEntity.setSupplier(supplierEntity);
         }
@@ -138,10 +138,11 @@ public  class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Page<ItemVO> searchItems(int page, int size, String sort, Long supplierID) throws Exception{
+    public Page<ItemVO> searchItems(int page, int size, String sort, Long userID) throws Exception{
+        SupplierEntity supplierEntity = supplierRepository.findByUser_IdAndUser_IsDeleted(userID,false);
         String direction = sort.substring(0,1);
         String keySort = sort.substring(1,sort.length());
-        Page<ItemEntity> items = itemRepository.findBySupplier_Id(supplierID, PageRequest.of(page, size,
+        Page<ItemEntity> items = itemRepository.findBySupplier_Id(supplierEntity.getId(), PageRequest.of(page, size,
                 direction.equals("D") ? Sort.Direction.DESC : Sort.Direction.ASC,
                 keySort));
 

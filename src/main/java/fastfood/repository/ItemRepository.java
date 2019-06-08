@@ -14,7 +14,7 @@ public interface ItemRepository extends JpaRepository<ItemEntity, Long> {
 
     List<ItemEntity> findBySupplier_IdAndSupplier_IsDeletedAndIsDeletedFalseAndIsActivedTrue(Long supplierId, Boolean isDeleted);
 
-    @Query("select  listItemsEntity from SupplierEntity as supplierEntity " +
+    @Query("select distinct listItemsEntity from SupplierEntity as supplierEntity " +
             "inner join supplierEntity.listItems as listItemsEntity " +
             "inner join supplierEntity.listSupplierCategories as supplierCategoryEntity " +
             "inner join supplierCategoryEntity.category categoryEntity " +
@@ -23,7 +23,7 @@ public interface ItemRepository extends JpaRepository<ItemEntity, Long> {
             "and listItemsEntity.isDeleted = false")
     List<ItemEntity> findBySupplierAndCategoryAndPagination(Long supplierId, Integer categoryId, Pageable pageable);
 
-    @Query("select  listItemsEntity from SupplierEntity as supplierEntity " +
+    @Query("select  distinct listItemsEntity from SupplierEntity as supplierEntity " +
             "inner join supplierEntity.listItems as listItemsEntity " +
             "inner join supplierEntity.listSupplierCategories as supplierCategoryEntity " +
             "inner join supplierCategoryEntity.category categoryEntity " +
@@ -32,7 +32,7 @@ public interface ItemRepository extends JpaRepository<ItemEntity, Long> {
             "and listItemsEntity.isDeleted = false")
     List<ItemEntity> findBySupplierAndPagination(Long supplierId, Pageable pageable);
 
-    @Query("select  count(listItemsEntity) from SupplierEntity as supplierEntity " +
+    @Query("select  count(distinct listItemsEntity) from SupplierEntity as supplierEntity " +
             "inner join supplierEntity.listItems as listItemsEntity " +
             "inner join supplierEntity.listSupplierCategories as supplierCategoryEntity " +
             "inner join supplierCategoryEntity.category categoryEntity " +
@@ -41,7 +41,7 @@ public interface ItemRepository extends JpaRepository<ItemEntity, Long> {
             "and listItemsEntity.isDeleted = false")
     Integer getTotalItemWithSupplierAndCategory(Long supplierId, Integer categoryId);
 
-    @Query("select  count(listItemsEntity) from SupplierEntity as supplierEntity " +
+    @Query("select  count(distinct listItemsEntity) from SupplierEntity as supplierEntity " +
             "inner join supplierEntity.listItems as listItemsEntity " +
             "inner join supplierEntity.listSupplierCategories as supplierCategoryEntity " +
             "inner join supplierCategoryEntity.category categoryEntity " +
@@ -58,7 +58,7 @@ public interface ItemRepository extends JpaRepository<ItemEntity, Long> {
     Page<ItemEntity> findBySupplier_Id(Long supplierID, Pageable pageable);
 
 
-    @Query("select distinct itemEntity from ItemEntity  as itemEntity " +
+    @Query("select distinct  itemEntity from ItemEntity  as itemEntity " +
             "inner join itemEntity.supplier as supplierEntity " +
             "inner join itemEntity.listItemCategories as itemCategoryEntity " +
             "inner join itemCategoryEntity.category as categoryEntity " +

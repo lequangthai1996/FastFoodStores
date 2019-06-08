@@ -129,10 +129,9 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public OrderVO updateStatus(Long id, Integer status) {
-        OrderEntity order = orderRepository.getOne(id);
+        OrderEntity order = orderRepository.findById(id).get();
         order.setStatus(status);
         orderRepository.save(order);
-        order = orderRepository.getOne(id);
         return convertVOWithoutOrderItem(order);
     }
 
@@ -216,14 +215,14 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderVO getByID(Long id) {
-        return convertVO(orderRepository.getOne(id));
+        return convertVO(orderRepository.findById(id).get());
     }
 
     @Override
-    public OrderVO deleteItem(Long id) {
-        OrderEntity order = orderRepository.getOne(id);
-        OrderVO orderVO = this.convertVO(order);
-        orderRepository.delete(order);
-        return orderVO;
+    public OrderEntity deleteItem(Long id) {
+        OrderEntity order = orderRepository.findById(id).get();
+        order.setIsDeleted(true);
+        orderRepository.save(order);
+        return order;
     }
 }
