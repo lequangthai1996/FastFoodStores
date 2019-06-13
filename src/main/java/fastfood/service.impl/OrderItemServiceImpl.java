@@ -40,11 +40,10 @@ public class OrderItemServiceImpl implements OrderItemService {
 
     @Override
     @Transactional
-    public List<OrderItemVO> getItemByOrder(long id) throws EntityNotFoundException {
-        List<OrderItemEntity> orderItems = orderRepository.getOne(id).getListOrderItems();
+    public List<OrderItemVO> getItemByOrder(Long  orderId, Long userId) throws EntityNotFoundException {
+        List<OrderItemEntity> orderItems = orderRepository.findByIdAndUser_IdAndIsDeletedFalse(orderId, userId).getListOrderItems();
         List<OrderItemVO> orderItemVOS = new ArrayList<>();
-        for (OrderItemEntity orderItem: orderItems
-                ) {
+        for (OrderItemEntity orderItem: orderItems) {
             orderItemVOS.add(convertVO(orderItem));
         }
         return orderItemVOS;

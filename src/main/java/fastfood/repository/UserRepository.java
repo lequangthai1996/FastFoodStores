@@ -9,4 +9,6 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
     UserEntity findByUsernameAndIsDeletedFalse(String username);
 
+    UserEntity findByIdAndIsDeletedFalse(Long id);
+
 }

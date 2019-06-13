@@ -20,7 +20,7 @@ public interface ItemRepository extends JpaRepository<ItemEntity, Long> {
             "inner join supplierCategoryEntity.category categoryEntity " +
             "where  supplierEntity.isDeleted = false and supplierEntity.id = ?1 " +
             "and categoryEntity.isDeleted = false and categoryEntity.id = ?2 " +
-            "and listItemsEntity.isDeleted = false")
+            "and listItemsEntity.isDeleted = false and listItemsEntity.isActived = true")
     List<ItemEntity> findBySupplierAndCategoryAndPagination(Long supplierId, Integer categoryId, Pageable pageable);
 
     @Query("select  distinct listItemsEntity from SupplierEntity as supplierEntity " +
@@ -29,7 +29,7 @@ public interface ItemRepository extends JpaRepository<ItemEntity, Long> {
             "inner join supplierCategoryEntity.category categoryEntity " +
             "where  supplierEntity.isDeleted = false and supplierEntity.id = ?1 " +
             "and categoryEntity.isDeleted = false " +
-            "and listItemsEntity.isDeleted = false")
+            "and listItemsEntity.isDeleted = false and listItemsEntity.isActived = true")
     List<ItemEntity> findBySupplierAndPagination(Long supplierId, Pageable pageable);
 
     @Query("select  count(distinct listItemsEntity) from SupplierEntity as supplierEntity " +
@@ -38,7 +38,7 @@ public interface ItemRepository extends JpaRepository<ItemEntity, Long> {
             "inner join supplierCategoryEntity.category categoryEntity " +
             "where  supplierEntity.isDeleted = false and supplierEntity.id = ?1 " +
             "and categoryEntity.isDeleted = false and categoryEntity.id = ?2 " +
-            "and listItemsEntity.isDeleted = false")
+            "and listItemsEntity.isDeleted = false and listItemsEntity.isActived = true")
     Integer getTotalItemWithSupplierAndCategory(Long supplierId, Integer categoryId);
 
     @Query("select  count(distinct listItemsEntity) from SupplierEntity as supplierEntity " +
@@ -47,7 +47,7 @@ public interface ItemRepository extends JpaRepository<ItemEntity, Long> {
             "inner join supplierCategoryEntity.category categoryEntity " +
             "where  supplierEntity.isDeleted = false and supplierEntity.id = ?1 " +
             "and categoryEntity.isDeleted = false " +
-            "and listItemsEntity.isDeleted = false")
+            "and listItemsEntity.isDeleted = false and listItemsEntity.isActived = true")
     Integer getTotalItemWithSupplier(Long supplierId);
 
     /**

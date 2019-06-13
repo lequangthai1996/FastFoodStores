@@ -1,6 +1,7 @@
 package fastfood.service.impl;
 
 import fastfood.domain.LoginDTO;
+import fastfood.domain.UserInfoDTO;
 import fastfood.domain.UserResponse;
 import fastfood.entity.RoleEntity;
 import fastfood.entity.UserEntity;
@@ -8,6 +9,7 @@ import fastfood.entity.UserRoleEntity;
 import fastfood.repository.RoleRepository;
 import fastfood.repository.UserRepository;
 import fastfood.service.UserService;
+import fastfood.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -16,6 +18,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -32,6 +35,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    @Autowired
+    private FileStorageService fileStorageService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -58,6 +64,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             return userEntity.convertToUserResponse();
         }
     }
+
+
 
     @Override
     public UserResponse addUser(LoginDTO loginDTO) {
@@ -131,6 +139,37 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public List<UserEntity> getAllUser() {
         return userRepository.findAll();
+    }
+
+    @Override
+    public UserResponse getUserDetail(Long userID) {
+        UserEntity userEntity = userRepository.findByIdAndIsDeletedFalse(userID);
+        if(userEntity == null) {
+            return  null;
+        } else {
+            return userEntity.convertToUserResponse();
+        }
+    }
+
+    @Override
+    public UserResponse updateUserInfo(UserInfoDTO userInfoDTO, MultipartFile avatar) throws Exception{
+        UserEntity userEntity = userRepository.findByIdAndIsDeletedFalse(StringUtils.convertStringToLongOrNull(userInfoDTO.getUserId()));
+
+        if(userEntity == null) {
+            return null;
+        } else {
+
+            if(avatar != null && !avatar.isEmpty()) {
+                String fileName = fileStorageService.storeFile(avatar);
+                userEntity.setAvatar(fileName);
+            }
+            userEntity.setFullName(userInfoDTO.getFullname());
+            userEntity.setPhone(userInfoDTO.getPhone());
+            userEntity.setAddress(userInfoDTO.getAddress());
+            userEntity.setGender("male".equals(userInfoDTO.getGender()) ? true : false);
+            userRepository.save(userEntity);
+            return userEntity.convertToUserResponse();
+        }
     }
 
 

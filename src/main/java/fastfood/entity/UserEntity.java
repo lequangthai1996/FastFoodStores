@@ -161,6 +161,7 @@ public class UserEntity extends  BasicEntity{
     public UserResponse convertToUserResponse() {
         UserResponse userResponse = new UserResponse();
         userResponse.setFullName(this.getFullName());
+        userResponse.setGender(this.getGender());
         userResponse.setPassword(this.getPassword());
         userResponse.setUsername(this.getUsername());
         userResponse.setId(StringUtils.convertObjectToString(this.getId()));

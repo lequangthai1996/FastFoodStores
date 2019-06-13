@@ -17,6 +17,7 @@ public class UserResponse {
     private String email;
     private String address;
     private String phone;
+    private Boolean gender;
 
     @JsonIgnore
     private String password;
@@ -24,6 +25,14 @@ public class UserResponse {
 
 
     public UserResponse() {
+    }
+
+    public Boolean getGender() {
+        return gender;
+    }
+
+    public void setGender(Boolean gender) {
+        this.gender = gender;
     }
 
     public UserResponse(String id, String avatar, String username, String fullName, String password, List<RoleDTO> authorities, String email) {

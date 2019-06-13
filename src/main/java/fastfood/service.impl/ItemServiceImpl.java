@@ -9,20 +9,14 @@ import fastfood.repository.*;
 import fastfood.service.ItemService;
 import fastfood.utils.PageConverter;
 import fastfood.utils.StringUtils;
-import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.convert.converter.Converter;
-import org.springframework.core.io.Resource;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -172,13 +166,31 @@ public  class ItemServiceImpl implements ItemService {
 
     }
 
+    @Override
+    public ItemVO getItemDetail(Long itemId) {
+
+        ItemEntity itemEntity = itemRepository.findById(itemId).get();
+
+        ItemVO itemVO = this.convertVO(itemEntity);
+
+        if(!StringUtils.isEmpty(itemEntity.getAvatar())) {
+            itemVO.setAvatar(fileStorageService.loadImageBase64(itemEntity.getAvatar()));
+        }
+        return itemVO;
+
+    }
+
 
     public ItemVO convertVO(ItemEntity item) {
         ItemVO itemVO = new ItemVO();
         itemVO.setId(item.getId());
         itemVO.setName(item.getName());
+        if(!StringUtils.isEmpty(item.getAvatar())) {
+            itemVO.setAvatar(fileStorageService.loadImageBase64(item.getAvatar()));
+        }
         itemVO.setPrice(item.getPrice());
         itemVO.setQuantity(item.getQuantity());
+        itemVO.setDescription(item.getDescription());
         itemVO.setCreatedAt(item.getCreatedDate());
         return itemVO;
     }

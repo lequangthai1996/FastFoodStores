@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -113,7 +114,6 @@ public class OrderServiceImpl implements OrderService {
             orderItemEntity.setPriceOfficial(itemEntity.getPrice().doubleValue());
             orderItemEntity.setQuantity(orderItemVO.getQuantityCart());
             orderItemRepository.save(orderItemEntity);
-            itemEntity.setQuantity(itemEntity.getQuantity()- orderItemVO.getQuantityCart());
             itemRepository.save(itemEntity);
 
         }
@@ -219,10 +219,25 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public List<OrderVO> getHistoryOrderOfUser(Long userID) {
+        List<OrderEntity> orderEntityList = orderRepository.findByUser_IdAndIsDeletedFalseOrderByCreatedDateDesc(userID);
+
+        List<OrderVO> orderVOList = orderEntityList.stream().map(
+                t -> convertVOWithoutOrderItem(t)
+        ).collect(Collectors.toList());
+        return  orderVOList;
+    }
+
+    @Override
     public OrderEntity deleteItem(Long id) {
         OrderEntity order = orderRepository.findById(id).get();
         order.setIsDeleted(true);
+        List<OrderItemEntity> orderItemEntityList = order.getListOrderItems();
+        orderItemEntityList.forEach(t->t.setIsDeleted(true));
+        orderItemRepository.saveAll(orderItemEntityList);
         orderRepository.save(order);
         return order;
     }
+
+
 }
