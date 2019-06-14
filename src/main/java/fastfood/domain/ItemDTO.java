@@ -110,7 +110,7 @@ public class ItemDTO {
         ItemEntity itemEntity = new ItemEntity();
         itemEntity.setName(this.getName());
         itemEntity.setAvatar(this.getAvatar());
-        itemEntity.setActived(this.getActive());
+        itemEntity.setActived(true);
         itemEntity.setDescription(this.getDescription());
         itemEntity.setPrice(this.getPrice());
         itemEntity.setQuantity(this.getQuantity());

@@ -146,6 +146,28 @@ public class ItemController {
         }
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<ResponseCommonAPI> getItemDetail(@PathVariable("id") Long id) {
+
+        ResponseCommonAPI res = new ResponseCommonAPI();
+
+        try {
+            ItemVO itemVO = itemService.getItemDetailBySaler(id);
+            res.setSuccess(true);
+            res.setData(itemVO);
+
+        } catch (Exception e) {
+            res.setSuccess(false);
+            res.setMessage(e.getMessage());
+        }
+
+        if(res.getSuccess()) {
+            return ResponseEntity.ok(res);
+        } else {
+            return ResponseEntity.badRequest().body(res);
+        }
+    }
+
 }
 
 

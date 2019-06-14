@@ -20,4 +20,6 @@ public interface ItemService {
     Page<ItemVO> searchItemsByCategory(Long supplierID, Integer categoryId, int page, int size, String sort) throws Exception;
 
     ItemVO getItemDetail(Long itemId);
+
+    ItemVO getItemDetailBySaler(Long itemId);
 }

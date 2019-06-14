@@ -9,6 +9,7 @@ import fastfood.domain.ResponseCommonAPI;
 import fastfood.domain.UserResponse;
 import fastfood.service.UserService;
 import fastfood.service.impl.FileStorageService;
+import fastfood.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,7 +49,7 @@ public class AuthenController {
         final  String token = tokenProvider.generateToken(authentication);
 
         UserResponse userResponse = (UserResponse) authentication.getPrincipal();
-        userResponse.setAvatar(fileStorageService.loadImageBase64(userResponse.getAvatar()));
+        userResponse.setAvatar(StringUtils.isEmpty(userResponse.getAvatar()) ? "" : fileStorageService.loadImageBase64(userResponse.getAvatar()));
 
         responseBody = new LoginResponse(userResponse, token);
 

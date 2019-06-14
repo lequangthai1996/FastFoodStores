@@ -101,6 +101,21 @@ public class GuessController {
 
     }
 
+    @PostMapping("/register/user")
+    public ResponseEntity<ResponseCommonAPI> registerAccountUser(@Valid @RequestBody RegisterUserDTO registerUserDTO) {
+
+        ResponseCommonAPI res = new ResponseCommonAPI();
+
+        try {
+            res = guessService.registerUserAccount(registerUserDTO);
+            return ResponseEntity.ok(res);
+        } catch (Exception e) {
+            res.setSuccess(false);
+            res.setMessage(e.getMessage());
+            return ResponseEntity.ok(res);
+        }
+    }
+
 
     @RequestMapping(value = "/register/saler", method = RequestMethod.POST)
     public ResponseEntity<ResponseCommonAPI> registerAccountSaler(RegisterSalerAccountDTO registerSalerAccountDTO, @RequestParam("files") MultipartFile[] files) {

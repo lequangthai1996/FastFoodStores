@@ -4,6 +4,7 @@ import fastfood.contant.DBConstant;
 import fastfood.contant.Error;
 import fastfood.domain.ErrorCustom;
 import fastfood.domain.RegisterSalerAccountDTO;
+import fastfood.domain.RegisterUserDTO;
 import fastfood.domain.ResponseCommonAPI;
 import fastfood.entity.*;
 import fastfood.repository.*;
@@ -21,6 +22,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class GuessServiceImpl implements GuessService {
+
+
 
     @Autowired
     private FileStorageService fileStorageService;
@@ -42,6 +45,56 @@ public class GuessServiceImpl implements GuessService {
 
     @Autowired
     private BCryptPasswordEncoder encoder;
+
+
+    @Override
+    public ResponseCommonAPI registerUserAccount(RegisterUserDTO registerUserDTO) throws Exception {
+        ResponseCommonAPI res = new ResponseCommonAPI();
+        UserEntity userEntity = userRepository.findByUsername(registerUserDTO.getUsername());
+        if(userEntity != null) {
+            res.setSuccess(false);
+            res.setMessage("username is exist");
+            return res;
+        }
+        UserEntity userEntity2 = userRepository.findByEmail(registerUserDTO.getEmail());
+        if(userEntity2 != null) {
+            res.setSuccess(false);
+            res.setMessage("email is exist");
+            return res;
+        }
+
+        UserEntity userEntityMustSave = new UserEntity();
+        userEntityMustSave.setUsername(registerUserDTO.getUsername());
+        userEntityMustSave.setEmail(registerUserDTO.getEmail());
+        userEntityMustSave.setAddress(registerUserDTO.getAddress());
+        userEntityMustSave.setPhone(registerUserDTO.getPhone());
+        userEntityMustSave.setFullName(registerUserDTO.getFullName());
+        userEntityMustSave.setPassword(encoder.encode(registerUserDTO.getPassword()));
+        userEntityMustSave.setGender(registerUserDTO.getGender());
+
+        List<String> roles = Arrays.asList(DBConstant.ROLE.USER.getName());
+
+        Set<RoleEntity> listRoles = roleRepository.findByNameInAndIsDeletedFalse(roles);
+        Set<UserRoleEntity> listUserRoles = new HashSet<>();
+        if(!CollectionUtils.isEmpty(listRoles)) {
+            listUserRoles = listRoles.stream().map(t-> {
+                UserRoleEntity userRoleEntity = new UserRoleEntity();
+                userRoleEntity.setUser(userEntityMustSave);
+                userRoleEntity.setRole(t);
+                return  userRoleEntity;
+            }).collect(Collectors.toSet());
+        }
+
+        userEntityMustSave.setListUserRoles(listUserRoles);
+
+
+        if(userRepository.save(userEntityMustSave) != null) {
+            res.setSuccess(true);
+        } else {
+            res.setSuccess(false);
+        }
+        return res;
+    }
 
     @Override
     @Transactional

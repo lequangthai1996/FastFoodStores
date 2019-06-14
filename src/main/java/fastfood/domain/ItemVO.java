@@ -1,6 +1,7 @@
 package fastfood.domain;
 
 import java.util.Date;
+import java.util.Set;
 
 public class ItemVO {
 
@@ -17,6 +18,15 @@ public class ItemVO {
     private Boolean active;
     private UnitVO unit;
     private SupplierVO supplier;
+    private Set<CategoryVO> categories;
+
+    public Set<CategoryVO> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(Set<CategoryVO> categories) {
+        this.categories = categories;
+    }
 
     public Long getId() {
         return id;

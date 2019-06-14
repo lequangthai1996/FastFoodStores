@@ -1,6 +1,7 @@
 package fastfood.service.impl;
 
 import com.google.common.base.Function;
+import fastfood.build.CategoryVOBuilder;
 import fastfood.contant.DBConstant;
 import fastfood.contant.DefineConstant;
 import fastfood.domain.*;
@@ -180,6 +181,17 @@ public  class ItemServiceImpl implements ItemService {
 
     }
 
+    @Override
+    public ItemVO getItemDetailBySaler(Long itemId) {
+        ItemEntity itemEntity = itemRepository.findById(itemId).get();
+
+        ItemVO itemVO = this.convertVO(itemEntity);
+
+        if(!StringUtils.isEmpty(itemEntity.getAvatar())) {
+            itemVO.setAvatar(fileStorageService.loadImageBase64(itemEntity.getAvatar()));
+        }
+        return itemVO;
+    }
 
     public ItemVO convertVO(ItemEntity item) {
         ItemVO itemVO = new ItemVO();
@@ -192,6 +204,35 @@ public  class ItemServiceImpl implements ItemService {
         itemVO.setQuantity(item.getQuantity());
         itemVO.setDescription(item.getDescription());
         itemVO.setCreatedAt(item.getCreatedDate());
+        return itemVO;
+    }
+
+    public ItemVO convertVOBySaler(ItemEntity item) {
+
+
+        ItemVO itemVO = new ItemVO();
+        itemVO.setId(item.getId());
+        itemVO.setName(item.getName());
+        if(!StringUtils.isEmpty(item.getAvatar())) {
+            itemVO.setAvatar(fileStorageService.loadImageBase64(item.getAvatar()));
+        }
+        itemVO.setPrice(item.getPrice());
+        itemVO.setQuantity(item.getQuantity());
+        itemVO.setDescription(item.getDescription());
+        itemVO.setCreatedAt(item.getCreatedDate());
+
+
+        Set<CategoryVO> categoryVOSet = new HashSet<>();
+        for(CategoryEntity category: item.getListItemCategories().stream().map(t->t.getCategory()).collect(Collectors.toList())){
+            CategoryVO categoryVO = CategoryVOBuilder.aCategoryVO()
+                    .withId(category.getId())
+                    .withLevelCategory(category.getLevel())
+                    .withParentId(category.getParentId())
+                    .withDescription(category.getDesciption())
+                    .withName(category.getName())
+                    .build();
+            categoryVOSet.add(categoryVO);
+        }
         return itemVO;
     }
 
